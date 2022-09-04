@@ -5,7 +5,7 @@ const Navbar = () => {
 
     const mentItems = <>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/Appointment">Appointment</Link></li>
+        <li><Link to="/appoinment">Appointment</Link></li>
         <li><Link to="/Reviews">Reviews</Link></li>
         <li><Link to="/Contact">Contact</Link></li>
         <li><Link to="/about"> About</Link></li>
