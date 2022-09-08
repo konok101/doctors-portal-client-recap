@@ -1,7 +1,7 @@
 import React from 'react';
-import { useCreateUserWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import auth from '../../firebase.init';
 import Loading from '../Shared/Loading';
 
@@ -14,12 +14,17 @@ const SignUp = () => {
         user,
         loading,
         error,
-      ] = useCreateUserWithEmailAndPassword(auth);
+    ] = useCreateUserWithEmailAndPassword(auth);
+
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+
+    const navigate = useNavigate();
+
 
 
     let signInError;
 
-    if (error || gError) {
+    if (error || gError || updateError) {
 
         signInError = <p className='text-red-500'>{error?.message || gError?.message}</p>;
 
@@ -37,9 +42,12 @@ const SignUp = () => {
         console.log(user || gUser);
     }
 
-    const onSubmit = (data) => {
+    const onSubmit = async data => {
         console.log('signup', data);
-        createUserWithEmailAndPassword(data.email, data.password);
+        await createUserWithEmailAndPassword(data.email, data.password);
+        await updateProfile({ displayName: data.name});
+        console.log('update done');
+        navigate('/appoinment');
 
     }
 
@@ -146,7 +154,7 @@ const SignUp = () => {
                         <input className='btn w-full max-w-xs ' value=' Sign Up' type="submit" />
                     </form>
 
-                    <p><small>New to Doctors portal <Link className='text-secondary' to="/signup"> Create New Account</Link></small></p>
+                    <p><small> Already have an account? <Link className='text-secondary' to="/login"> Login</Link></small></p>
                     <div className="divider">OR</div>
                     <button
                         onClick={() => signInWithGoogle()}
