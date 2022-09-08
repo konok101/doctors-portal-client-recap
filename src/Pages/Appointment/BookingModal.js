@@ -4,13 +4,42 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 
 const BookingModal = ({ date, treatment, setTreatment }) => {
-    const { name, slots } = treatment;
+    const { _id, name, slots } = treatment;
     const [user, loading, error] = useAuthState(auth);
+    const formatteDate = format(date, 'PP');
     const handleBooking = event => {
         event.preventDefault();
         const slot = event.target.slot.value;
         console.log(slot)
-        setTreatment(null);
+        const booking = {
+            treatmentId: _id,
+            treatment: name,
+            date: formatteDate,
+            slot,
+            patient: user.email,
+            patientName: user.displayName,
+            phone: event.target.phone.value
+
+
+        }
+
+        fetch('http://localhost:5000/booking', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                console.log(data);
+                setTreatment(null);
+
+            })
+
+
 
     }
     return (
@@ -30,7 +59,7 @@ const BookingModal = ({ date, treatment, setTreatment }) => {
 
                         </select>
                         <input type="text" name='name ' disabled value={user?.displayName || ''} className="input input-bordered input-info w-full max-w-xs" />
-                        <input type="text" name='email'  disabled value={user?.email || ''} className="input input-bordered input-info w-full max-w-xs" />
+                        <input type="text" name='email' disabled value={user?.email || ''} className="input input-bordered input-info w-full max-w-xs" />
                         <input type="text" name='phone' placeholder="phone number" className="input input-bordered input-info w-full max-w-xs" />
                         <input type="submit" value="submit" className=" btn btn-secondary input-info w-full max-w-xs" />
                     </form>
