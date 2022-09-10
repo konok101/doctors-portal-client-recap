@@ -8,6 +8,7 @@ const MyAppoinment = () => {
 
     const [user] = useAuthState(auth);
     const [appoinments, setAppoinments] = useState([]);
+    //const navigate = useNavigate()
  
 
     useEffect(() => {
