@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
+import { signOut } from 'firebase/auth';
 
 const MyAppoinment = () => {
 
     const [user] = useAuthState(auth);
     const [appoinments, setAppoinments] = useState([]);
+ 
 
     useEffect(() => {
         if (user) {
-            fetch(`http://localhost:5000/bookingPatients?patient=${user.email}`)
+            fetch(`http://localhost:5000/booking?patient=${user.email}`)
                 .then(res => res.json())
-                .then(data => setAppoinments(data))
+                .then(data=> {setAppoinments(data)});
+                      
 
         }
     }, [user])
@@ -19,7 +23,7 @@ const MyAppoinment = () => {
 
     return (
         <div>
-           {/*  <h1>Appoinment {appoinments.length}</h1> */}
+          <h1>Appoinment {appoinments.length}</h1> 
 
             <div class="overflow-x-auto">
                 <table class="table w-full">
@@ -37,7 +41,7 @@ const MyAppoinment = () => {
                         {
                             appoinments.map((appoinment, index) =>
                                 <tr>
-                                    <th>{index+1}</th>
+                                    <th>{index + 1}</th>
                                     <td>{appoinment.patientName}</td>
                                     <td>{appoinment.date}</td>
                                     <td>{appoinment.slot}</td>

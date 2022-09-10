@@ -5,9 +5,10 @@ import auth from '../../firebase.init';
 import { signOut } from 'firebase/auth';
 
 const Navbar = () => {
-    const [user, loading, error] = useAuthState(auth);
+    const [user ] = useAuthState(auth);
     const logout = () => {
         signOut(auth);
+        localStorage.removeItem('accessToken');
     };
     const mentItems = <>
         <li><Link to="/">Home</Link></li>
